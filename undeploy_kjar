@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+#
+# Script used to create and perform HTTP POST to BPMS6 to undeploy a deployment unit
+
+#Default Input values
+USERNAME="bpmsAdmin"
+PASSWORD="abcd1234!"
+BPMS_HOSTNAME="localhost"
+BPMS_PORT="8080"
+GROUP_ID="org.kie.example"
+ARTIFACT_ID="project1"
+VERSION="1.0.0-SNAPSHOT"
+KBASE=""
+KSESSION=""
+RUNTIME_STRATEGY="PER_PROCESS_INSTANCE"
+PROTOCOL="http"
+
+function USAGE {
+	echo "Script used to create and perform HTTP POST to BPMS6 to undeploy a deployment unit."
+	echo "USAGE: deploy_kjar [OPTIONS]"
+	echo "        -u username"
+	echo "        -p password"
+	echo "        -h hostname"
+	echo "        --port port"
+	echo "        -g group_id"
+	echo "        -a artifact_id"
+	echo "        -v version"
+	echo "        -k kbase"
+	echo "        -s ksession"
+	echo "        -r runtime_strategy"
+	echo "        --protocol (http|https)"
+	exit 1;
+}
+
+
+while (( "$#" )) ; do
+
+
+	#Help page
+	if [ "$1" == "-h" -o "$1" == "--help" ] ; then
+		USAGE
+	fi
+
+	#Incorrect number of arguments
+	if [ "$#" -eq "1" ] ; then
+		echo "Incorrect number of arguments"
+		USAGE
+	fi
+
+	#Parse this argument identifier and its value
+	if [ "$1" == "-u" ] ; then
+		USERNAME=$2
+	elif [ "$1" == "-p" ] ; then
+		PASSWORD=$2
+	elif [ "$1" == "-h" ] ; then
+		BPMS_HOSTNAME=$2
+	elif [ "$1" == "--port" ] ; then
+		BPMS_PORT=$2
+	elif [ "$1" == "-g" ] ; then
+		GROUP_ID=$2
+	elif [ "$1" == "-a" ] ; then
+		ARTIFACT_ID=$2
+	elif [ "$1" == "-v" ] ; then
+		VERSION=$2
+	elif [ "$1" == "-k" ] ; then
+		KBASE=$2
+	elif [ "$1" == "-s" ] ; then
+		KSESSION=$2
+	elif [ "$1" == "-r" ] ; then
+		RUNTIME_STRATEGY=$2
+	elif [ "$1" == "--protocol" ] ; then
+		PROTOCOL=$2
+	else 
+		echo "Unrecognized option $1"
+		USAGE
+	fi
+
+	shift 2
+done
+
+
+
+
+
+
+
+#Calculated values
+if [ -z "$KBASE" -a -z "$KSESSION" ] ; then
+	DEPLOYMENT_ID=$GROUP_ID:$ARTIFACT_ID:$VERSION
+else 
+	DEPLOYMENT_ID=$GROUP_ID:$ARTIFACT_ID:$VERSION:$KBASE:$KSESSION
+fi
+
+URL="$PROTOCOL://$BPMS_HOSTNAME:$BPMS_PORT/business-central/rest/deployment/$DEPLOYMENT_ID/undeploy"
+
+curl -f -k -u $USERNAME:$PASSWORD -d '' -w "Deployed $DEPLOYMENT_ID\n" $URL
+exit $?
