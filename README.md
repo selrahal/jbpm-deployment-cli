@@ -1,6 +1,10 @@
-# Manage jBPM Deployments
+# jBPM Deployments CLI
 
 Some scripts to facilitate creating and removing process deployments in Red Hat JBoss BPM Suite 6.
+
+## Requirements
+1. Bash - These scripts are using your /bin/bash executable
+2. cURL - These scripts are expected the 'curl' executable to be on your PATH
 
 ## Deploy a kjar
 
