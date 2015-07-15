@@ -36,7 +36,7 @@ while (( "$#" )) ; do
 
 
 	#Help page
-	if [ "$1" == "-h" -o "$1" == "--help" ] ; then
+	if [ "$1" == "--help" ] ; then
 		USAGE
 	fi
 
@@ -90,5 +90,5 @@ fi
 
 URL="$PROTOCOL://$BPMS_HOSTNAME:$BPMS_PORT/business-central/rest/deployment/$DEPLOYMENT_ID/undeploy"
 
-curl -f -k -u $USERNAME:$PASSWORD -d '' -w "Deployed $DEPLOYMENT_ID\n" $URL
+curl -X POST -f -k -u $USERNAME:$PASSWORD  -w "\nUndeployed $DEPLOYMENT_ID\n" $URL
 exit $?
